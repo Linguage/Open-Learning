@@ -1,2 +1,2 @@
-# Random and Probability
+# Math
 
