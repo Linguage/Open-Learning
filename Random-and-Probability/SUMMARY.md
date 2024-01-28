@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Math](README.md)
+* [Math](Learn-AI/Random-and-Probability/README.md)
   * [Linear-Algebra](math/linear-algebra.md)
   * [Calculus](math/calculus.md)
   * [Fourier Analysis and Wavelets](math/fourier-analysis-and-wavelets.md)
