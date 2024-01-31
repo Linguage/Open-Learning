@@ -9,5 +9,3 @@
 首先，关于[GitHub的使用方法](./技能学习/GitHub的使用技能.md)。
 
 
-
-Start it without pause

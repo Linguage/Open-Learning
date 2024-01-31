@@ -1,7 +1,15 @@
 
 ## 网络访问
 
+在安装号git之后，在shell中输入如下命令。
 
+此处端口为1080，具体端口号以自己的电脑代理为准。
+
+``` git
+  git config --global http.proxy 'socks5://127.0.0.1:1080'
+  git config --global https.proxy 'socks5://127.0.0.1:1080'
+  
+```
 
 ## 版本
 
