@@ -1,0 +1,19 @@
+# LaTeX 编译过程中生成的临时文件
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# LaTeX 编译生成的输出文件
+*.dvi
+*.ps
+*.html
+*.doc
+*.docx
+*.csv
+
+# TeX Live 的临时文件夹
+_build
