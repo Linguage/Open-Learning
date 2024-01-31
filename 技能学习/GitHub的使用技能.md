@@ -1,19 +1,20 @@
 
 ## 网络访问
 
-在安装号git之后，在shell中输入如下命令。
+在国内，因为某些客观原因，需要自行想一些办法实现与GitHub的联通。比如，通过设置代理。但是某些代理默认GitHub不需要走代理端口，因此依然无法实现文件的pull与push。对此问题，可以先确认自己的代理端口号，然后按照如下的方法来设置。
 
-此处端口为1080，具体端口号以自己的电脑代理为准。
+1. 安装好git之后，打开git bash。
+2. 加入端口为1080，在GitShell中输入如下命令。
 
 ``` git
   git config --global http.proxy 'socks5://127.0.0.1:1080'
   git config --global https.proxy 'socks5://127.0.0.1:1080'
-  
 ```
+
 
 ## 版本
 
-### Git on Shell
+### Git
 
 直接通过命令行安装git，连同GitHub，对文件进行管理。
 
