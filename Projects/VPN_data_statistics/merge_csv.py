@@ -13,7 +13,7 @@ for filename in os.listdir(input_folder):
     if filename.endswith('.csv'):
         file_path = os.path.join(input_folder, filename)
         # 读取每个 CSV 文件中的数据
-        with open(file_path, 'r', newline='') as csvfile:
+        with open(file_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             # 跳过第一行（标题行）
             next(reader)
