@@ -16,14 +16,23 @@ python3 sorted_traffic_summary.py
 # 生成流量消耗的日报
 python3 daily_traffic.py
 ```
-可查看汇总之后的数据‘/sorted_traffic_summary.csv’
+
+输出的汇总信息可以查看如下文件
+```css
+- 过去三天的数据汇总：sorted_traffic_summary.csv
+- 每天总流量和节点消耗排名：daily_traffic_summary.csv
+```
+
+## 待完善的功能
+
 
 如要查看总流量的消耗变化图，可执行
 ```bash
 python3 traffic_time.py   
 ```
+但本功能目前尚需要改进。
 
-## 待完善的功能
+后续考虑添加如下功能：
 
 - [x] 将节点的汇总结果根据流量消耗大小排序，在汇总表中呈现
 - [ ] 设置流量监测的可视化方案，用户可以自行点选
@@ -31,3 +40,4 @@ python3 traffic_time.py
   - [ ] 时间跨度
   - [ ] 时间间隔
 - [ ] 设置流量预警功能
+
