@@ -1,7 +1,5 @@
 import csv
 from collections import defaultdict
-from datetime import datetime, timedelta
-import operator
 
 # Read the traffic summary CSV file
 traffic_summary = []
@@ -24,16 +22,17 @@ traffic_summary.insert(1, total_traffic_row)
 filtered_nodes = [node for node, total_traffic in node_traffic_totals.items() if total_traffic >= 10]
 
 # Rearrange traffic summary based on filtered nodes
-sorted_traffic_summary = [traffic_summary[0]]
-for node in filtered_nodes:
-    for row in traffic_summary[2:]:
-        if row[0] == node:
-            sorted_traffic_summary.append(row)
+sorted_traffic_summary = []
+for col_idx, col_data in enumerate(zip(*traffic_summary)):
+    if col_idx == 0 or col_data[0] in filtered_nodes:
+        sorted_traffic_summary.append(list(col_data))
+
+# Rearrange traffic summary based on filtered nodes and transpose the matrix
+sorted_traffic_summary_transposed = list(map(lambda row: [f'{float(value):.2f}' for value in row], zip(*sorted_traffic_summary)))
 
 # Write the sorted and filtered traffic summary to a new CSV file
 with open('sorted_traffic_summary.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    for row in sorted_traffic_summary[2:]:
-        writer.writerow(row)
+    writer.writerows(sorted_traffic_summary_transposed)
 
 print("Sorted and filtered traffic summary has been saved to 'sorted_traffic_summary.csv'")
