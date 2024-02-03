@@ -1,5 +1,7 @@
 
 *
+!*.md
 !*.py
-!*.csv
+!input_csv_folder/
+!input_csv_folder/*.csv
 !.gitignore

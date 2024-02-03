@@ -8,7 +8,7 @@ node_traffic = defaultdict(float)
 traffic_statistics = defaultdict(lambda: defaultdict(float))
 
 # Read the CSV file and perform traffic statistics
-with open('export-2.csv', newline='') as csvfile:
+with open('merged_data_sorted.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     # Skip the header
     next(reader)

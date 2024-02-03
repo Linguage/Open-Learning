@@ -28,11 +28,19 @@ for col_idx, col_data in enumerate(zip(*traffic_summary)):
         sorted_traffic_summary.append(list(col_data))
 
 # Rearrange traffic summary based on filtered nodes and transpose the matrix
-sorted_traffic_summary_transposed = list(map(lambda row: [f'{float(value):.2f}' for value in row], zip(*sorted_traffic_summary)))
+sorted_traffic_summary_transposed = []
+
+# Transpose the data except for the first row and first column
+for i, row in enumerate(sorted_traffic_summary):
+    if i == 0:  # Preserve the first row
+        sorted_traffic_summary_transposed.append(row)
+    else:
+        transposed_row = [row[0]] + [f'{float(value):.2f}' for value in row[1:]]  # Preserve the first column, convert the rest to floats
+        sorted_traffic_summary_transposed.append(transposed_row)
 
 # Write the sorted and filtered traffic summary to a new CSV file
 with open('sorted_traffic_summary.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerows(sorted_traffic_summary_transposed)
+    writer.writerows(zip(*sorted_traffic_summary_transposed))
 
 print("Sorted and filtered traffic summary has been saved to 'sorted_traffic_summary.csv'")
