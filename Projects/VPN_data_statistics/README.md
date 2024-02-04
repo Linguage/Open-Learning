@@ -18,9 +18,11 @@ python3 daily_traffic.py
 ```
 
 输出的汇总信息可以查看如下文件
-```css
-- 过去三天的数据汇总：sorted_traffic_summary.csv
-- 每天总流量和节点消耗排名：daily_traffic_summary.csv
+```bash
+- 过去三天的数据汇总：
+  - sorted_traffic_summary.csv
+- 每天总流量和节点消耗排名：
+  - daily_traffic_summary.csv
 ```
 
 ## 待完善的功能
