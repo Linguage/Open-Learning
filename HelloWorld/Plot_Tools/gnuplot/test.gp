@@ -1,8 +1,6 @@
 # 启用LaTeX选项
-set macros
-TEX = 'C:\texlive\2023\bin\windows'
-set terminal pdfcairo enhanced color font 'Times New Roman,12'
-set output 'output.pdf'
+set term epslatex standalone lw 2 color 11
+set output "sinx.tex"
 set encoding utf8
 set format '$%g$'
 
@@ -24,3 +22,4 @@ set yrange [-1:1]
 
 # 绘制正弦函数曲线
 plot sin(x) with lines lw 2 title "$\\sin(x)$"
+set output
