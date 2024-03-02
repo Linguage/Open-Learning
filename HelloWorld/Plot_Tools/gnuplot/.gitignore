@@ -1,0 +1,10 @@
+*
+
+!*.gitignore
+!*.gp
+!*.tex
+!*.pdf
+!*.png
+!gp/
+!gp/*.gp
+!gp/*.png
