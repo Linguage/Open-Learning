@@ -1,3 +1,25 @@
+# 程序功能：根据时域信号 At 计算振动指标 W
+
+# 程序的框架为：
+# 1. 导入必要的库
+# 2. 定义计算振动公式系数的函数 calculate_vibration_formula_coefficient(frequency, direction)
+# 3. 假设你已经有了时域的样本数据 At
+# 4. 对时域信号进行 FFT 转换
+# 5. 提取频率和对应的幅值
+# 6. 遍历每个频率点，计算对应的 W 值
+# 7. 计算最终指标 W = W1 * W2 *... * Wn，其中 Wi 为每个频率点的 W 值
+# 8. 输出最终指标 W
+
+# 注意：
+# 1. 程序中使用的振动公式系数 F(f) 请根据实际情况进行修改
+# 2. 程序中使用的振动方向 direction 请根据实际情况进行修改
+
+# 程序的运行流程为：
+# 1. 运行程序，输入时域信号 At
+# 2. 程序输出最终指标 W
+
+# 导入必要的库
+
 import numpy as np
 
 def calculate_vibration_formula_coefficient(frequency, direction):
