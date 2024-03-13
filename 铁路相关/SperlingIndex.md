@@ -21,3 +21,4 @@ $\text{W=7. 08}\left[\frac{A^{3}}{f}F\left(f\right)\right]^{0.1}$
 
 
 $$W=\sqrt[10]{(W_{1}^{10}+W_{2}^{10}+\cdotp\cdotp\cdotp+W_{N}^{10})}$$
+
