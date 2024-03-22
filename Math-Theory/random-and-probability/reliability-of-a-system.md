@@ -1,2 +1,0 @@
-# Reliability of a System
-

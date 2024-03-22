@@ -1,7 +1,0 @@
-# 设置git忽略文件
-# 忽略所有文件，除了.gitignore文件、.tex文件、.bib文件和.pdf文件
-*
-!*.gitignore
-!*.tex
-!*.bib
-!*.pdf
