@@ -1,0 +1,9 @@
+
+# org-mode输出的中间文件
+*
+
+!*.gitignore
+!*.org
+!*.html
+!*.pdf
+

@@ -1,0 +1,5 @@
+*
+!.gitignore
+!*.f90
+!*.cpp
+!CMakeLists.txt

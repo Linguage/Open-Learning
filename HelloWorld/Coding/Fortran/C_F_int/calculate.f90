@@ -1,0 +1,7 @@
+subroutine calculate(x, y, z)
+    implicit none
+    real*8, intent(in) :: x, y
+    real*8, intent(out) :: z
+    
+    z = x + y
+end subroutine calculate
