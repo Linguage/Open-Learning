@@ -15,7 +15,7 @@
 
 
 \documentclass[UTF8]{ctexart}
-
+\usepackage{graphicx}
 % 然后，我们需要设置文档的标题、作者、日期等信息。
 \title{我的第一个LaTeX文档}
 \author{作者}
@@ -38,6 +38,30 @@
 \begin{equation}
 E=mc^2
 \end{equation}
+
+\begin{verbatim}
+    Fréchet Derivative
+    
+    Fréchet derivative of $f: \mathbb{C}^{n \times n} \rightarrow \mathbb{C}^{n \times n}$ at $X \in \mathbb{C}^{n \times n}$
+    
+    A linear mapping $L: \mathbb{C}^{n \times n} \rightarrow \mathbb{C}^{n \times n}$ s.t. for all $E \in \mathbb{C}^{n \times n}$
+    
+    $$f(X + E) - f(X) - L(X, E) = o(\|E\|).$$
+    
+    Example For $f(X) = X^2$ we have
+    
+    $$f(X + E) - f(X) = XE + EX + E^2,$$
+    
+    so $L(X, E) = XE + EX$.
+    
+    Nick Higham
+    
+    Matrix Functions
+    
+    17/28
+    
+    Figure 4 A Beamer slide.
+    \end{verbatim}
 
 \subsection{第二小节}
 
