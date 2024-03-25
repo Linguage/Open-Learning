@@ -1,0 +1,13 @@
+*
+!.gitignore
+
+!*.tex
+!*.bib
+!*.pdf
+
+!*.eps
+!*.png
+!*.jpg
+!*.jpeg
+!*.gif
+
