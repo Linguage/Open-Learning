@@ -31,8 +31,8 @@ with open('merged_data_sorted.csv', newline='') as csvfile:
 
         # Accumulate traffic for each node and time period
         node_traffic[row[0]] += traffic_mb
-        # Consider only the last 72 hours of data
-        if log_time >= datetime.now() - timedelta(hours=72):
+        # Consider only the last 168 hours of data
+        if log_time >= datetime.now() - timedelta(hours=168):
             # Round the timestamp to the nearest three hours
             log_time = log_time - timedelta(hours=log_time.hour % 3, minutes=log_time.minute, seconds=log_time.second)
             # Accumulate traffic

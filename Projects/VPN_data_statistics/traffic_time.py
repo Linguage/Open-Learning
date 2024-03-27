@@ -28,7 +28,7 @@ with open('merged_data_sorted.csv', newline='') as csvfile:
         else:
             traffic_mb = 0
 
-        # Consider only the last 72 hours of data
+        # Consider only the last 72 hours（3days) of data
         if log_time >= datetime.now() - timedelta(hours=72):
             # Round the timestamp to 5 minutes
             log_time = log_time - timedelta(minutes=log_time.minute % 5, seconds=log_time.second)
