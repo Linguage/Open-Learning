@@ -5,7 +5,7 @@
 %% 加载信号
 clear; clc; close all;
 %%load('ecg.mat');
-s = load('2.txt'); % 这个ECG信号采样率是250Hz
+s = load('1.txt'); % 这个ECG信号采样率是250Hz
 s = 0.2*s
 Fs = 100; % 采样频率，需要根据实际信号改
 N = length(s); % 序列长度
@@ -38,7 +38,7 @@ B = fix(B*128/mx); % 这个B存放的就是时频分析的结果了，后边就�
 
 % 原信号
 figure;
-subplot(221); 
+subplot(221);
 plot((0:N-1)/Fs,s); xlabel('Time (s)'); ylabel('Amplitude'); title('原信号');
 
 % FFT频谱
@@ -50,7 +50,7 @@ Yk(1) = 0;
 Yk(2) = 0;
 K1 = fix(f2*N/Fs);
 fp1 = [0 : K1-1]/N*Fs;
-plot(fp1,Yk(1:K1)); 
+plot(fp1,Yk(1:K1));
 xlabel('Frequency (Hz)'); ylabel('X(k)'); title('FFT频谱');
 
 % FSWT时频图
@@ -58,7 +58,7 @@ subplot(223)
 t = (0:Tn-1)*N/Fs/Tn;
 [x,y] = meshgrid(t,fp*Fs/N);
 [na,nb] = size(y);
-mesh(x,y,B'); 
+mesh(x,y,B');
 xlabel('Time (s)'); ylabel('Frequency (Hz)'); zlabel('Amplitude'); title('FSWT时频图');
 
 % FSWT时频图 图片形式
