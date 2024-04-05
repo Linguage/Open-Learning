@@ -1,5 +1,15 @@
+
 *
+
 !.gitignore
+
+!README.md
+
+!LICENSE
+
 !*.tex
+
 !*.pdf
 
+# 同文件夹下的文件夹可以同步
+!*/
