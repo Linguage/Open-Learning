@@ -4,4 +4,7 @@
 !*.py
 !input_csv_folder/
 !input_csv_folder/*.csv
+!output_csv_folder/
+!output_csv_folder/*.csv
+!*.ipynb
 !.gitignore

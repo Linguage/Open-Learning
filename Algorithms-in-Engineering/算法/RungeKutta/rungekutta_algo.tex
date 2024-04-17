@@ -1,0 +1,30 @@
+
+
+
+\begin{algorithm}
+    \caption{Runge-Kutta Fourth-Order for 2D PDE}
+    \begin{algorithmic}[1]
+    \State \textbf{Input:} $u$ (二维数组，表示网格上的函数值), $nx$, $ny$ (网格尺寸), $dx$, $dy$ (网格步长), $dt$ (时间步长), $f$ (偏微分方程右侧函数)
+    \State \textbf{Output:} 更新后的函数值数组 $u$
+    
+    \For {每一个时间步长}
+        \For {i 从 1 到 nx-1}
+            \For {j 从 1 到 ny-1}
+                \State 计算在x和y方向上的二阶偏导数：
+                \State \quad $u_{xx} = \frac{u[i+1][j] - 2 \cdot u[i][j] + u[i-1][j]}{dx^2}$
+                \State \quad $u_{yy} = \frac{u[i][j+1] - 2 \cdot u[i][j] + u[i][j-1]}{dy^2}$
+                
+                \State 计算Runge-Kutta系数：
+                \State \quad $k_1 = dt \cdot f(u[i][j], u_{xx}, u_{yy})$
+                \State \quad $k_2 = dt \cdot f(u[i][j] + 0.5 \cdot k_1, u_{xx}, u_{yy})$
+                \State \quad $k_3 = dt \cdot f(u[i][j] + 0.5 \cdot k_2, u_{xx}, u_{yy})$
+                \State \quad $k_4 = dt \cdot f(u[i][j] + k_3, u_{xx}, u_{yy})$
+                
+                \State 更新函数值：
+                \State \quad $u[i][j] = u[i][j] + \frac{1}{6} \cdot (k_1 + 2 \cdot k_2 + 2 \cdot k_3 + k_4)$
+            \EndFor
+        \EndFor
+    \EndFor
+    \end{algorithmic}
+\end{algorithm}
+    

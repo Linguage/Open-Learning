@@ -8,13 +8,13 @@
 
 ```bash
 # 将数据文件汇总去重复并按时间顺序排序
-python3 merge_csv.py  
+python merge_csv.py  
 # 提取不同节点的流量消耗情况，以每3个小时为时间单位统计
-python3 traffic_sumary.py  
+python traffic_sumary.py  
 # 提取流量消耗超过10M的节点的数据
-python3 sorted_traffic_summary.py 
+python sorted_traffic_summary.py 
 # 生成流量消耗的日报
-python3 daily_traffic.py
+python daily_traffic.py
 ```
 
 输出的汇总信息可以查看如下文件
