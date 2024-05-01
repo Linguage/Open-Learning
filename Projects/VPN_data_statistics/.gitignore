@@ -6,5 +6,7 @@
 !input_csv_folder/*.csv
 !output_csv_folder/
 !output_csv_folder/*.csv
+!data_archived
+!data_archived/*.csv
 !*.ipynb
 !.gitignore
