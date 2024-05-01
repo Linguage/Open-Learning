@@ -1,0 +1,8 @@
+
+*
+!Templates/
+!Templates/**
+!*.md
+!*.pdf
+
+!.gitignore
