@@ -2,4 +2,4 @@
 !.gitignore
 !*.py
 !Scores
-!Scores/*.xlsx
+!**/*.xlsx

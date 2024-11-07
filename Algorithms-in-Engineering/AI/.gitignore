@@ -1,9 +1,10 @@
 # 忽视文件夹内除.py、.ipynb
 
 *
-!*.gitignore
-!*.py
-!*.ipynb
+!**/*.gitignore
+!**/*.py
+!**/*.ipynb
+!**/*.md
 
 !**/
 
