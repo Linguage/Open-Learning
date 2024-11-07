@@ -1,0 +1,19 @@
+# what a 
+#+LATEX_HEADER: \usepackage[UTF8]{ctex}
+
+#+title: 功能测试
+
+* 
+
+* 一级标题-1
+** 二级标题
+SCHEDULED: <2024-01-12 五>b
+
+$\alpha$
+
+* 
+
+*
+
+
+
