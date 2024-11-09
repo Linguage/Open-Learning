@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON 渲染示例</title>
+    <style>
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON 渲染示例</h1>
+    <pre id="json-display"></pre>
+
+    <script>
+        // 你的 JSON 数据
+        const jsonData = {
+            "requesterUsername": "PeakHan618",
+            "requesterAvatarIconUri": {
+                "$mid": 1,
+                "path": "/u/5518800",
+                "scheme": "https",
+                "authority": "avatars.githubusercontent.com",
+                "query": "v=4"
+            },
+            "responderUsername": "GitHub Copilot",
+            "responderAvatarIconUri": {
+                "id": "copilot"
+            },
+            "initialLocation": "panel",
+            "requests": [
+                {
+                    "message": {
+                        "text": "@workspace /explain Write an explanation for the active selection as paragraphs of text.\n\n```commonlisp\n(use-package imenu\n  :ensure t\n  :config\n  (setq imenu-auto-rescan t))\n(use-package imenu-list\n  :ensure t\n  :bind ((\"C-' C-'\" . imenu-list-smart-toggle))\n  :config\n  (setq imenu-list-focus-after-activation t)\n  (setq imenu-list-auto-resize t))\n(use-package realgud\n  :ensure t\n  :config\n  (require 'realgud))\n```\n\n",
+                        "parts": [
+                            {
+                                "range": {
+                                    "start": 0,
+                                    "endExclusive": 10
+                                },
+                                "editorRange": {
+                                    "startLineNumber": 1,
+                                    "startColumn": 1,
+                                    "endLineNumber": 1,
+                                    "endColumn": 11
+                                },
+                                "agent": {
+                                    "extensionId": {
+                                        // 省略的部分
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        // 将 JSON 数据格式化为字符串并显示在页面上
+        document.getElementById('json-display').textContent = JSON.stringify(jsonData, null, 2);
+    </script>
+</body>
+</html>
