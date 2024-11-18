@@ -1,0 +1,16 @@
+project_dir: ./Model
+- src/: 源代码目录
+    - bridge/: 桥梁模块
+    - calc/: 计算模块
+    - control/: 控制模块
+    - data/: 数据管理模块
+    - interaction/: 荷载模块
+    - interface/: 接口模块
+    - a.md
+- test/: 测试文件目录
+    - bridge_test/: 桥梁测试
+    - integration_test/: 集成测试
+    - load_test/: 荷载测试
+- docs/: 文档目录
+    - api/: API 文档
+    - examples/: 示例

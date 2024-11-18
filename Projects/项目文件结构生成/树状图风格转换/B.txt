@@ -1,0 +1,20 @@
+Model
+ ├── src
+ │   ├── control
+ │   ├── data
+ │   │   └── visual
+ │   ├── interface
+ │   │   └── bridge_io.m
+ │   ├── model
+ │   │   ├── bridge
+ │   │   ├── load
+ │   │   └── track
+ │   └── solver
+ │   │   └── newmark_solver.m
+ ├── test
+ │   ├── load_test
+ │   │   └── test_main.m
+ │   └── solver_test
+ │   │   └── test_solver.m
+ ├── README.md
+ └── main.m

@@ -1,0 +1,15 @@
+Model
+  - docs
+    - api
+    - examples
+  - src
+    - bridge
+    - calc
+    - control
+    - data
+    - interaction
+    - interface
+  - test
+    - bridge_test
+    - integration_test
+    - load_test
