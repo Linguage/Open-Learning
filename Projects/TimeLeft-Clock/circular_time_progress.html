@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美化圆形时间进度工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+        }
+
+        #clock-container {
+            position: relative;
+            width: 500px; /* 加大容器尺寸 */
+            height: 500px;
+        }
+
+        #clock-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-label {
+            position: absolute;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        #year-label {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #f7abab; /* 淡红色 */
+        }
+
+        #month-label {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f7f4ab; /* 淡黄色 */
+        }
+
+        #day-label {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #abf7f7; /* 淡蓝色 */
+        }
+
+         #time-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+         }
+    </style>
+</head>
+<body>
+    <div id="clock-container">
+        <canvas id="clock-canvas" width="500" height="500"></canvas>
+        <div class="progress-label" id="year-label">年</div>
+        <div class="progress-label" id="month-label">月</div>
+        <div class="progress-label" id="day-label">日</div>
+        <div class="progress-label" id="time-label"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('clock-canvas');
+        const ctx = canvas.getContext('2d');
+        const containerSize = canvas.width; // 使用画布宽度作为基准尺寸
+        const clockRadius = containerSize / 2 * 0.65; // 时钟主体半径略微缩小
+        const progressRingWidth = containerSize / 2 * 0.08; // 进度环宽度
+        const clockCenter = { x: containerSize / 2, y: containerSize / 2 };
+
+        // 颜色定义 (浅色底和深色进度)
+        const colors = {
+            yearLight: '#f7abab',   // 年 - 淡红色
+            yearDark:  '#e04a4a',   // 年 - 深红色
+            monthLight: '#f7f4ab',  // 月 - 淡黄色
+            monthDark:  '#e0d54a',  // 月 - 深黄色
+            dayLight:  '#abf7f7',    // 日 - 淡蓝色
+            dayDark:   '#4ae0e0'    // 日 - 深蓝色
+        };
+
+
+        function drawClock() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 0. 绘制背景色 (浅灰色)
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+            // 1. 绘制时钟主体圆盘 (更浅的灰色底色，弱化边框)
+            ctx.fillStyle = '#f8f8f8';
+            ctx.strokeStyle = '#e0e0e0'; // 更淡的边框颜色
+            ctx.lineWidth = 1; // 更细的边框
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, clockRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+
+
+            // 获取当前时间
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const day = now.getDate();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            // 计算各种进度
+            const yearProgress = getProgressRatio('year', now);
+            const monthProgress = getProgressRatio('month', now);
+            const dayProgress = getProgressRatio('day', now);
+
+            // 2. 绘制进度环 - 年 (淡红色底 + 深红色进度)
+            drawProgressRing(yearProgress, clockRadius + progressRingWidth/2 + progressRingWidth * 2 + 10, colors.yearLight, colors.yearDark); // 年环在最外层，加大外环间距
+
+            // 3. 绘制进度环 - 月 (淡黄色底 + 深黄色进度)
+            drawProgressRing(monthProgress, clockRadius + progressRingWidth/2 + progressRingWidth + 5, colors.monthLight, colors.monthDark); // 月环在中间，适度调整间距
+
+            // 4. 绘制进度环 - 日 (淡蓝色底 + 深蓝色进度)
+            drawProgressRing(dayProgress, clockRadius + progressRingWidth/2, colors.dayLight, colors.dayDark); // 日环在最内层
+
+
+            // 5. 绘制时钟刻度 - 边缘刻度
+            drawClockScale();
+
+
+            // 6. 绘制时针、分针、秒针
+            drawHands(hour, minute, second, now);
+
+             // 7.  绘制中心圆点 (颜色加深)
+            ctx.fillStyle = '#555'; // 深灰色中心圆点
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, 5, 0, 2 * Math.PI); // 略微增大中心圆点
+            ctx.fill();
+
+            // 8. 绘制 年-月-日  在钟表盘下方
+            ctx.fillStyle = '#333'; // 日期文字颜色
+            ctx.font =  `${containerSize * 0.045}px Arial`; // 字体大小与容器尺寸相关
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top'; // 基线对齐方式调整为 top
+            const dateText = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            ctx.fillText(dateText, clockCenter.x, clockCenter.y + clockRadius + containerSize * 0.04); //  文字垂直位置略微下移
+
+
+            // 9. 更新时间标签 (移除中心时间标签)  不再需要中心的数字时间标签，可以移除或者注释掉
+            // const timeLabelDiv = document.getElementById('time-label');
+            // const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+            // timeLabelDiv.textContent = formattedTime;
+
+
+        }
+
+        function drawProgressRing(progressRatio, radius, lightColor, darkColor) {
+            ctx.lineWidth = progressRingWidth;
+
+            // 绘制浅色底色圆环
+            ctx.strokeStyle = lightColor;
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, radius, 0, 2 * Math.PI); // 完整圆环
+            ctx.stroke();
+
+            // 绘制深色进度圆弧
+            ctx.strokeStyle = darkColor;
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, radius, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * progressRatio); // 进度圆弧
+            ctx.stroke();
+        }
+
+
+        function drawClockScale() {
+            const scaleRadius = clockRadius; // 刻度盘半径与时钟主体半径一致
+            const scaleLengthMajor = containerSize * 0.03; // 主刻度线长度
+            const scaleLengthMinor = containerSize * 0.015; // 副刻度线长度
+            const scaleWidthMajor = 2; // 主刻度线宽度
+            const scaleWidthMinor = 1; // 副刻度线宽度
+
+
+            for (let i = 0; i < 60; i++) {
+                const angle = i * (Math.PI / 30); // 每格 6 度
+                const isMajor = i % 5 === 0; // 每 5 格为主刻度
+
+                const scaleStartRadius = scaleRadius;
+                const scaleEndRadius = scaleRadius - (isMajor ? scaleLengthMajor : scaleLengthMinor);
+                ctx.lineWidth = isMajor ? scaleWidthMajor : scaleWidthMinor;
+                ctx.strokeStyle = '#555'; // 刻度线颜色
+
+                ctx.beginPath();
+                ctx.moveTo(clockCenter.x + Math.cos(angle - Math.PI / 2) * scaleStartRadius, clockCenter.y + Math.sin(angle - Math.PI / 2) * scaleStartRadius);
+                ctx.lineTo(clockCenter.x + Math.cos(angle - Math.PI / 2) * scaleEndRadius, clockCenter.y + Math.sin(angle - Math.PI / 2) * scaleEndRadius);
+                ctx.stroke();
+            }
+        }
+
+
+        function drawHands(hour, minute, second, now) {
+            // 时针
+            const hourAngle = (hour % 12 + minute / 60) * (Math.PI / 6);
+            drawHand(hourAngle, clockRadius * 0.45, 'black', containerSize * 0.015); // 时针略短且更粗
+
+            // 分针
+            const minuteAngle = (minute + second / 60) * (Math.PI / 30);
+            drawHand(minuteAngle, clockRadius * 0.65, 'black', containerSize * 0.01); // 分针长度适中，中等粗细
+
+            // 秒针 (红色，更细)
+            const secondAngle = second * (Math.PI / 30);
+            drawHand(secondAngle, clockRadius * 0.75, 'red', containerSize * 0.005); // 秒针最长且最细
+        }
+
+        function drawHand(angle, length, color, width) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(clockCenter.x, clockCenter.y);
+            ctx.lineTo(clockCenter.x + Math.cos(angle - Math.PI / 2) * length, clockCenter.y + Math.sin(angle - Math.PI / 2) * length);
+            ctx.stroke();
+        }
+
+
+        function getProgressRatio(type, now) {
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            switch (type) {
+                case 'year':
+                    const daysInYear = isLeapYear(year) ? 366 : 365;
+                    const dayOfYear = getDayOfYear(now);
+                    return dayOfYear / daysInYear;
+                case 'month':
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const dayOfMonth = now.getDate();
+                    return dayOfMonth / daysInMonth;
+                case 'day':
+                    const currentHourDecimal = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+                    return currentHourDecimal / 24;
+                default:
+                    return 0;
+            }
+        }
+
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getDayOfYear(date) {
+            const startOfYear = new Date(date.getFullYear(), 0, 1);
+            const diff = date - startOfYear;
+            const oneDay = 1000 * 60 * 60 * 24;
+            return Math.floor(diff / oneDay) + 1;
+        }
+
+        // 每秒更新时钟
+        setInterval(drawClock, 1000);
+
+        // 页面加载时立即绘制一次
+        drawClock();
+    </script>
+
+</body>
+</html>

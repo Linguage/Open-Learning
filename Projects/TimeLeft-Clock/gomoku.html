@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        #game-container {
+            text-align: center;
+        }
+
+        #info {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        #canvas {
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="info">轮到玩家：<span id="currentPlayer">黑棋</span></div>
+        <canvas id="canvas" width="450" height="450"></canvas>
+        <button id="reset-button">重新开始</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const infoDisplay = document.getElementById('info');
+        const resetButton = document.getElementById('reset-button');
+        const currentPlayerDisplay = document.getElementById('currentPlayer');
+
+        const gridSize = 15; // 棋盘大小
+        const cellSize = canvas.width / gridSize;
+        let board = []; // 棋盘状态
+        let currentPlayer = 1; // 1: 黑棋, 2: 白棋
+        let gameActive = true;
+
+        // 初始化棋盘
+        function initBoard() {
+            board = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+        }
+
+        // 绘制棋盘
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#333';
+
+            for (let i = 0; i < gridSize; i++) {
+                // 绘制竖线
+                ctx.beginPath();
+                ctx.moveTo(cellSize * i + cellSize / 2, cellSize / 2);
+                ctx.lineTo(cellSize * i + cellSize / 2, canvas.height - cellSize / 2);
+                ctx.stroke();
+
+                // 绘制横线
+                ctx.beginPath();
+                ctx.moveTo(cellSize / 2, cellSize * i + cellSize / 2);
+                ctx.lineTo(canvas.width - cellSize / 2, cellSize * i + cellSize / 2);
+                ctx.stroke();
+            }
+        }
+
+        // 绘制棋子
+        function drawPiece(row, col, player) {
+            const x = col * cellSize + cellSize / 2;
+            const y = row * cellSize + cellSize / 2;
+            const radius = cellSize / 2 - 5;
+
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = player === 1 ? 'black' : 'white';
+            ctx.fill();
+        }
+
+        // 检查输赢
+        function checkWin(row, col, player) {
+            const directions = [
+                { x: 1, y: 0 },  // 横向
+                { x: 0, y: 1 },  // 纵向
+                { x: 1, y: 1 },  // 斜向
+                { x: 1, y: -1 } // 反斜向
+            ];
+
+            for (const dir of directions) {
+                let count = 1; // 包括当前棋子
+                // 向前检查
+                for (let i = 1; i < 5; i++) {
+                    const checkRow = row + i * dir.y;
+                    const checkCol = col + i * dir.x;
+                    if (checkRow >= 0 && checkRow < gridSize && checkCol >= 0 && checkCol < gridSize && board[checkRow][checkCol] === player) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+                // 向后检查
+                for (let i = 1; i < 5; i++) {
+                    const checkRow = row - i * dir.y;
+                    const checkCol = col - i * dir.x;
+                    if (checkRow >= 0 && checkRow < gridSize && checkCol >= 0 && checkCol < gridSize && board[checkRow][checkCol] === player) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+                if (count >= 5) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 处理点击事件
+        function handleClick(event) {
+            if (!gameActive) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+
+            if (row < 0 || row >= gridSize || col < 0 || col >= gridSize || board[row][col] !== 0) {
+                return; // 点击位置无效
+            }
+
+            board[row][col] = currentPlayer;
+            drawPiece(row, col, currentPlayer);
+
+            if (checkWin(row, col, currentPlayer)) {
+                gameActive = false;
+                infoDisplay.textContent = `玩家 ${currentPlayer === 1 ? '黑棋' : '白棋'} 获胜!`;
+            } else {
+                currentPlayer = 3 - currentPlayer; // 切换玩家 (1变为2, 2变为1)
+                currentPlayerDisplay.textContent = currentPlayer === 1 ? '黑棋' : '白棋';
+            }
+        }
+
+        // 重新开始游戏
+        function resetGame() {
+            initBoard();
+            drawBoard();
+            currentPlayer = 1;
+            gameActive = true;
+            infoDisplay.textContent = '轮到玩家：';
+            currentPlayerDisplay.textContent = '黑棋';
+        }
+
+        // 初始化游戏
+        function startGame() {
+            initBoard();
+            drawBoard();
+            canvas.addEventListener('click', handleClick);
+            resetButton.addEventListener('click', resetGame);
+        }
+
+        startGame(); // 启动游戏
+    </script>
+</body>
+</html>

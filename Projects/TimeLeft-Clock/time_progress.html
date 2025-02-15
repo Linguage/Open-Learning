@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间进度条工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 20px;
+        }
+
+        .time-display {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 15px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #f0f0f0; /* 基础颜色 */
+            width: 0%; /* 初始宽度为0 */
+            border-radius: 5px;
+            text-align: center; /* 水平居中 */
+            line-height: 20px; /* 垂直居中 */
+            color: #333;
+            transition: width 0.3s ease; /* 平滑过渡效果 */
+            display: flex;
+            justify-content: center; /* 使进度条内的文字也居中 */
+            align-items: center;
+        }
+
+        .progress-bar-label {
+            padding: 0 10px;
+            font-weight: bold;
+        }
+
+        .progress-bar-text {
+            margin-left: auto;
+            padding: 0 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        /* 自定义颜色 */
+        .year-progress {
+            background-color: #ffe0e0; /* 淡红色 */
+        }
+
+        .month-progress {
+            background-color: #fffacd; /* 淡黄色 */
+        }
+
+        .day-progress {
+            background-color: #e0f7fa; /* 淡蓝色 */
+        }
+         .progress-container-inner {
+            display: flex;
+            width: 100%;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="time-display" id="current-time">
+        </div>
+
+    <div class="progress-bar-container">
+        <div class="progress-container-inner">
+            <div class="progress-bar-label">年</div>
+            <div class="progress-bar year-progress" id="year-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span class="progress-bar-text" id="year-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-bar-container">
+         <div class="progress-container-inner">
+            <div class="progress-bar-label">月</div>
+            <div class="progress-bar month-progress" id="month-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span class="progress-bar-text" id="month-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-bar-container">
+         <div class="progress-container-inner">
+            <div class="progress-bar-label">日</div>
+            <div class="progress-bar day-progress" id="day-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span class="progress-bar-text" id="day-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateProgress() {
+            const now = new Date();
+
+            // 0. 更新当前时间显示
+            const currentTimeDiv = document.getElementById('current-time');
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            currentTimeDiv.textContent = `当下时刻: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+
+            // 1. 年进度
+            const yearBar = document.getElementById('year-bar');
+            const yearText = document.getElementById('year-text');
+            const daysInYear = isLeapYear(year) ? 366 : 365;
+            const dayOfYear = getDayOfYear(now);
+            const yearProgress = (dayOfYear / daysInYear) * 100;
+            yearBar.style.width = `${yearProgress}%`;
+            yearBar.setAttribute('aria-valuenow', yearProgress.toFixed(2)); // 设置aria-valuenow以便辅助技术访问
+            yearText.textContent = `${dayOfYear}/${daysInYear}`;
+
+
+            // 2. 月进度
+            const monthBar = document.getElementById('month-bar');
+            const monthText = document.getElementById('month-text');
+            const daysInMonth = new Date(year, now.getMonth() + 1, 0).getDate(); // 获取当月天数
+            const dayOfMonth = now.getDate();
+            const monthProgress = (dayOfMonth / daysInMonth) * 100;
+            monthBar.style.width = `${monthProgress}%`;
+            monthBar.setAttribute('aria-valuenow', monthProgress.toFixed(2));
+            monthText.textContent = `${dayOfMonth}/${daysInMonth}`;
+
+            // 3. 日进度
+            const dayBar = document.getElementById('day-bar');
+            const dayText = document.getElementById('day-text');
+            const currentHourDecimal = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+            const dayProgress = (currentHourDecimal / 24) * 100;
+            dayBar.style.width = `${dayProgress}%`;
+            dayBar.setAttribute('aria-valuenow', dayProgress.toFixed(2));
+            dayText.textContent = `${currentHourDecimal.toFixed(2)}/24`;
+        }
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getDayOfYear(date) {
+            const startOfYear = new Date(date.getFullYear(), 0, 1);
+            const diff = date - startOfYear;
+            const oneDay = 1000 * 60 * 60 * 24;
+            return Math.floor(diff / oneDay) + 1;
+        }
+
+        // 每秒更新进度条
+        setInterval(updateProgress, 1000);
+
+        // 页面加载时立即更新一次
+        updateProgress();
+    </script>
+
+</body>
+</html>

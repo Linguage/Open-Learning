@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆形时间进度工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+        }
+
+        #clock-container {
+            position: relative; /* 容器相对定位 */
+            width: 300px; /* 调整容器大小 */
+            height: 300px;
+        }
+
+        #clock-canvas {
+            position: absolute; /* 画布绝对定位，覆盖整个容器 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-label {
+            position: absolute; /* 标签绝对定位 */
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        #year-label {
+            top: 10px; /* 调整年标签位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffe0e0; /* 淡红色 */
+        }
+
+        #month-label {
+            right: 10px; /* 调整月标签位置 */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fffacd; /* 淡黄色 */
+        }
+
+        #day-label {
+            bottom: 10px; /* 调整日标签位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e0f7fa; /* 淡蓝色 */
+        }
+
+         #time-label {
+            position: absolute; /* 时间标签绝对定位 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock-container">
+        <canvas id="clock-canvas" width="300" height="300"></canvas>
+        <div class="progress-label" id="year-label">年</div>
+        <div class="progress-label" id="month-label">月</div>
+        <div class="progress-label" id="day-label">日</div>
+        <div class="progress-label" id="time-label"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('clock-canvas');
+        const ctx = canvas.getContext('2d');
+        const clockRadius = canvas.width / 2 * 0.7; // 时钟主体半径，缩小为容器的70%
+        const progressRingWidth = canvas.width / 2 * 0.1; // 进度环宽度为容器的10%
+        const clockCenter = { x: canvas.width / 2, y: canvas.height / 2 };
+
+
+        function drawClock() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. 绘制外边框 (可选)
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, canvas.width / 2 * 0.95, 0, 2 * Math.PI); // 稍微外扩
+            ctx.stroke();
+
+            // 2. 绘制时钟主体圆盘
+            ctx.fillStyle = '#f0f0f0'; // 时钟盘底色
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, clockRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke(); // 保留边框
+
+
+            // 获取当前时间
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const day = now.getDate();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            // 计算各种进度
+            const yearProgress = getProgressRatio('year', now);
+            const monthProgress = getProgressRatio('month', now);
+            const dayProgress = getProgressRatio('day', now);
+
+            // 3. 绘制进度环 - 年 (淡红色)
+            drawProgressRing(yearProgress, clockRadius + progressRingWidth/2 + 5 + progressRingWidth * 2, '#ffe0e0'); // 年环在最外层
+
+            // 4. 绘制进度环 - 月 (淡黄色)
+            drawProgressRing(monthProgress, clockRadius + progressRingWidth/2 + 5 + progressRingWidth * 1, '#fffacd'); // 月环在中间
+
+            // 5. 绘制进度环 - 日 (淡蓝色)
+            drawProgressRing(dayProgress, clockRadius + progressRingWidth/2 + 5 , '#e0f7fa'); // 日环在最内层
+
+
+            // 6. 绘制时针、分针、秒针
+            drawHands(hour, minute, second, now);
+
+             // 7.  绘制中心圆点
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+
+
+            // 8. 更新时间标签
+            const timeLabelDiv = document.getElementById('time-label');
+            const formattedTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}`;
+            timeLabelDiv.textContent = formattedTime;
+
+
+        }
+
+        function drawProgressRing(progressRatio, radius, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = progressRingWidth;
+            ctx.beginPath();
+            ctx.arc(clockCenter.x, clockCenter.y, radius, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * progressRatio); // 从正上方开始
+            ctx.stroke();
+        }
+
+
+        function drawHands(hour, minute, second, now) {
+            // 时针
+            const hourAngle = (hour % 12 + minute / 60) * (Math.PI / 6);
+            drawHand(hourAngle, clockRadius * 0.5, 'black', 6); // 时针略粗短
+
+            // 分针
+            const minuteAngle = (minute + second / 60) * (Math.PI / 30);
+            drawHand(minuteAngle, clockRadius * 0.7, 'black', 4);
+
+            // 秒针 (红色)
+            const secondAngle = second * (Math.PI / 30);
+            drawHand(secondAngle, clockRadius * 0.8, 'red', 2);
+        }
+
+        function drawHand(angle, length, color, width) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round'; // 圆角线帽
+            ctx.beginPath();
+            ctx.moveTo(clockCenter.x, clockCenter.y);
+            ctx.lineTo(clockCenter.x + Math.cos(angle - Math.PI / 2) * length, clockCenter.y + Math.sin(angle - Math.PI / 2) * length); // - Math.PI / 2 调整起始角度为12点钟方向
+            ctx.stroke();
+        }
+
+
+        function getProgressRatio(type, now) {
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            switch (type) {
+                case 'year':
+                    const daysInYear = isLeapYear(year) ? 366 : 365;
+                    const dayOfYear = getDayOfYear(now);
+                    return dayOfYear / daysInYear;
+                case 'month':
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const dayOfMonth = now.getDate();
+                    return dayOfMonth / daysInMonth;
+                case 'day':
+                    const currentHourDecimal = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+                    return currentHourDecimal / 24;
+                default:
+                    return 0;
+            }
+        }
+
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getDayOfYear(date) {
+            const startOfYear = new Date(date.getFullYear(), 0, 1);
+            const diff = date - startOfYear;
+            const oneDay = 1000 * 60 * 60 * 24;
+            return Math.floor(diff / oneDay) + 1;
+        }
+
+        // 每秒更新时钟
+        setInterval(drawClock, 1000);
+
+        // 页面加载时立即绘制一次
+        drawClock();
+    </script>
+
+</body>
+</html>
