@@ -20,21 +20,16 @@
             text-align: center;
         }
 
-        #controls {
-            margin-bottom: 10px; /* 控制区域与画布的间距 */
+        .control-row {
             display: flex;
-            align-items: center; /* 对齐滑块和文字 */
-            justify-content: center; /* 水平居中 */
-        }
-
-        #speedSlider {
-            width: 200px; /* 滑块宽度 */
-            margin-left: 10px; /* 滑块与文字的间距 */
-        }
-
-        #score {
+            align-items: center;
+            justify-content: center;
+            height: 40px; /* 统一高度 */
             margin-bottom: 10px;
-            font-size: 1.2em;
+        }
+
+        #score, #controls {
+            font-size: 1em;  /* 统一字体大小 */
         }
 
         #canvas {
@@ -46,7 +41,6 @@
         button {
             padding: 10px 20px;
             font-size: 1em;
-            margin-top: 10px; /* 按钮与画布的间距 */
             cursor: pointer;
         }
 
@@ -55,18 +49,77 @@
             color: red;
             margin-top: 20px;
         }
+
+        #countdown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #fff;
+            z-index: 999;
+        }
+
+        .symbol-button {
+            margin-left: 5px;
+            font-size: 1.2em;
+            width: 1.5em;  /* 设置宽度为字体大小的1.5倍 */
+            height: 1.5em; /* 设置高度为字体大小的1.5倍 */
+            padding: 0;    /* 移除内边距 */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #boardSize {
+            width: 4em;  /* 限制输入框宽度 */
+            text-align: center; /* 数字居中显示 */
+        }
+
+        #speedSlider {
+            width: 150px;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        .game-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="score">得分: <span id="scoreValue">0</span></div>
-        <div id="controls">
-            <label for="speedSlider">速度控制:</label>
-            <input type="range" id="speedSlider" min="50" max="500" value="150" step="50">
+        <h1 class="game-title">贪吃蛇</h1>
+        <div class="control-row">
+            <div id="score">得分: <span id="scoreValue">0</span></div>
+            <div id="controls" style="margin-left: 20px;">
+                <label for="speedSlider">速度控制:</label>
+                <input type="range" id="speedSlider" min="0.2" max="5" value="1" step="0.1">
+            </div>
         </div>
+
         <canvas id="canvas" width="300" height="300"></canvas>
-        <button id="reset-button">重新开始</button>
+
+        <div class="control-row">
+            <div id="board-size-setup">
+                <label for="boardSize">棋盘大小:</label>
+                <input type="number" id="boardSize" min="10" max="50" value="20" step="5">
+                <button id="confirm-board-size" class="symbol-button">✅</button>
+                <button id="reset-button" class="symbol-button">🔄</button>
+                <button id="pause-button" class="symbol-button">⏸️</button>
+                <button id="resume-button" class="symbol-button">▶️</button>
+            </div>
+        </div>
         <div id="game-over" style="display:none;">游戏结束! 您的得分: <span id="finalScore">0</span></div>
+        <div id="countdown-overlay" style="display: none;">3</div>
     </div>
 
     <script>
@@ -77,17 +130,19 @@
         const speedSlider = document.getElementById('speedSlider');
         const gameOverDisplay = document.getElementById('game-over');
         const finalScoreDisplay = document.getElementById('finalScore');
+        const countdownOverlay = document.getElementById('countdown-overlay');
 
-
-        const gridSize = 20;
-        const tileSize = canvas.width / gridSize;
+        let gridSize = 20;
+        let tileSize = canvas.width / gridSize;
         let snake = [{ x: 10, y: 10 }];
         let food = generateFood();
         let direction = 'right';
-        let gameSpeed = 150; // 初始速度，现在由滑块控制
+        const BASE_SPEED = 200;  // 基准速度
+        let gameSpeed = BASE_SPEED; // 初始速度
         let score = 0;
         let gameRunning = false;
         let gameInterval;
+        let countdownValue = 3;
 
         // 生成食物
         function generateFood() {
@@ -182,27 +237,22 @@
             return false;
         }
 
-        // 游戏循环
+        // 移除递归 setTimeout, 改由 setInterval
         function gameLoop() {
             if (!gameRunning) return;
 
-            setTimeout(() => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawGrid();
-                drawFood();
-                moveSnake();
-                drawSnake();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+            drawFood();
+            moveSnake();
+            drawSnake();
 
-                if (checkGameOver()) {
-                    gameRunning = false;
-                    clearInterval(gameInterval);
-                    finalScoreDisplay.textContent = score; // 显示最终得分
-                    gameOverDisplay.style.display = 'block'; // 显示游戏结束信息
-                    return;
-                }
-
-                gameLoop();
-            }, gameSpeed);
+            if (checkGameOver()) {
+                gameRunning = false;
+                clearInterval(gameInterval);
+                finalScoreDisplay.textContent = score;
+                gameOverDisplay.style.display = 'block';
+            }
         }
 
         // 改变蛇的移动方向
@@ -212,22 +262,26 @@
             const UP_KEY = 38;
             const RIGHT_KEY = 39;
             const DOWN_KEY = 40;
+            const W_KEY = 87;  // W键
+            const A_KEY = 65;  // A键
+            const S_KEY = 83;  // S键
+            const D_KEY = 68;  // D键
 
             const isVertical = direction === 'up' || direction === 'down';
             const isHorizontal = direction === 'left' || direction === 'right';
 
-            if (keyPressed === LEFT_KEY && !isHorizontal) {
+            if ((keyPressed === LEFT_KEY || keyPressed === A_KEY) && !isHorizontal) {
                 direction = 'left';
-            } else if (keyPressed === UP_KEY && !isVertical) {
+            } else if ((keyPressed === UP_KEY || keyPressed === W_KEY) && !isVertical) {
                 direction = 'up';
-            } else if (keyPressed === RIGHT_KEY && !isHorizontal) {
+            } else if ((keyPressed === RIGHT_KEY || keyPressed === D_KEY) && !isHorizontal) {
                 direction = 'right';
-            } else if (keyPressed === DOWN_KEY && !isVertical) {
+            } else if ((keyPressed === DOWN_KEY || keyPressed === S_KEY) && !isVertical) {
                 direction = 'down';
             }
         }
 
-        // 开始游戏
+        // 仅在 startGame 设置 setInterval, 去掉对 gameLoop() 的直接调用
         function startGame() {
             if (gameRunning) return;
             gameRunning = true;
@@ -236,9 +290,8 @@
             direction = 'right';
             snake = [{ x: 10, y: 10 }];
             food = generateFood();
-            gameOverDisplay.style.display = 'none'; // 隐藏游戏结束信息
-            gameInterval = setInterval(gameLoop, gameSpeed);
-            gameLoop();
+            gameOverDisplay.style.display = 'none';
+            gameInterval = setInterval(gameLoop, gameSpeed); // 只用 setInterval 驱动
         }
 
         // 重置游戏
@@ -255,7 +308,8 @@
             drawFood();
             drawSnake();
             gameOverDisplay.style.display = 'none'; // 隐藏游戏结束信息
-            startGame();
+            // 去掉直接启动游戏, 改用倒计时
+            startCountdown();
         }
 
         // 初始化游戏
@@ -266,13 +320,53 @@
             resetButton.addEventListener('click', resetGame);
             document.addEventListener('keydown', changeDirection);
             speedSlider.addEventListener('input', function() { // 监听滑块变化
-                gameSpeed = parseInt(speedSlider.value); // 更新游戏速度
+                gameSpeed = BASE_SPEED / parseFloat(speedSlider.value); // 更新游戏速度
                 if (gameRunning) { // 如果游戏正在运行，需要重启定时器以应用新速度
                     clearInterval(gameInterval);
                     gameInterval = setInterval(gameLoop, gameSpeed);
                 }
             });
-            startGame();
+            document.getElementById('confirm-board-size').addEventListener('click', function() {
+                gridSize = parseInt(document.getElementById('boardSize').value) || 20;
+                tileSize = canvas.width / gridSize;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawGrid();
+                drawFood();
+                drawSnake();
+                startCountdown();
+            });
+
+            // 新增: 暂停与继续
+            document.getElementById('pause-button').addEventListener('click', function() {
+                if (gameRunning) {
+                    gameRunning = false;
+                    clearInterval(gameInterval);
+                }
+            });
+
+            document.getElementById('resume-button').addEventListener('click', function() {
+                if (!gameRunning) {
+                    gameRunning = true;
+                    gameInterval = setInterval(gameLoop, gameSpeed);
+                }
+            });
+        }
+
+        // 新增: 倒计时功能
+        function startCountdown() {
+            countdownOverlay.style.display = 'flex';
+            countdownOverlay.textContent = countdownValue;
+            const countdownInterval = setInterval(() => {
+                countdownValue--;
+                if (countdownValue > 0) {
+                    countdownOverlay.textContent = countdownValue;
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownOverlay.style.display = 'none';
+                    countdownValue = 3; 
+                    startGame(); // 倒计时结束后正式开始游戏
+                }
+            }, 1000);
         }
 
         initGame();
