@@ -1,0 +1,1238 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    % 添加中文支持
+    \usepackage{xeCJK}
+    \setCJKmainfont{STSong} % 使用华文宋体，您也可以换成其他中文字体
+    
+    % 确保使用 XeLaTeX 编译器
+    \usepackage{ifxetex}
+    \RequireXeTeX
+
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Keep aspect ratio if custom image width or height is specified
+    \setkeys{Gin}{keepaspectratio}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Newmark\_Method\_Example}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \section{Newmark数值积分法详解与算例}\label{newmarkux6570ux503cux79efux5206ux6cd5ux8be6ux89e3ux4e0eux7b97ux4f8b}
+
+Newmark方法是结构动力学中常用的时间步积分方法，用于求解结构的动力响应。该方法由N.M.
+Newmark于1959年提出，是一类隐式积分方法，广泛应用于地震工程和结构动力学分析中。
+
+    \subsection{1.
+Newmark方法的理论基础}\label{newmarkux65b9ux6cd5ux7684ux7406ux8bbaux57faux7840}
+
+Newmark方法基于以下位移和速度的迭代公式：
+
+\[u_{n+1} = u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}[(1-2\beta)\ddot{u}_n + 2\beta\ddot{u}_{n+1}]\]
+
+\[\dot{u}_{n+1} = \dot{u}_n + \Delta t[(1-\gamma)\ddot{u}_n + \gamma\ddot{u}_{n+1}]\]
+
+其中： - \(u\), \(\dot{u}\), \(\ddot{u}\) 分别表示位移、速度和加速度 -
+\(\Delta t\) 是时间步长 - \(\beta\) 和 \(\gamma\)
+是控制积分精度和稳定性的参数 - 当 \(\gamma = 1/2, \beta = 1/4\)
+时，为平均加速度法（无条件稳定） - 当 \(\gamma = 1/2, \beta = 1/6\)
+时，为线性加速度法（条件稳定）
+
+    \subsection{2.
+单自由度系统的Newmark方法求解}\label{ux5355ux81eaux7531ux5ea6ux7cfbux7edfux7684newmarkux65b9ux6cd5ux6c42ux89e3}
+
+单自由度系统的运动方程为：
+
+\[m\ddot{u} + c\dot{u} + ku = p(t)\]
+
+其中： - \(m\) 是质量 - \(c\) 是阻尼系数 - \(k\) 是刚度 - \(p(t)\)
+是外部荷载
+
+下面我们将导入必要的库并设置一个算例来演示Newmark方法的应用。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{integrate} \PY{k+kn}{import} \PY{n}{solve\PYZus{}ivp}
+
+\PY{c+c1}{\PYZsh{} 设置绘图样式}
+\PY{n}{plt}\PY{o}{.}\PY{n}{style}\PY{o}{.}\PY{n}{use}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{seaborn\PYZhy{}v0\PYZus{}8\PYZhy{}whitegrid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{figure.figsize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font.size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{12}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \subsection{3. 算例设置 -
+单自由度系统}\label{ux7b97ux4f8bux8bbeux7f6e---ux5355ux81eaux7531ux5ea6ux7cfbux7edf}
+
+我们考虑一个受简谐外力作用的单自由度弹簧-质量-阻尼系统。该系统的参数如下：
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 系统参数}
+\PY{n}{m} \PY{o}{=} \PY{l+m+mf}{1.0}       \PY{c+c1}{\PYZsh{} 质量 (kg)}
+\PY{n}{k} \PY{o}{=} \PY{l+m+mf}{100.0}     \PY{c+c1}{\PYZsh{} 刚度 (N/m)}
+\PY{n}{xi} \PY{o}{=} \PY{l+m+mf}{0.05}     \PY{c+c1}{\PYZsh{} 阻尼比}
+\PY{n}{omega\PYZus{}n} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{k}\PY{o}{/}\PY{n}{m}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 自然频率 (rad/s)}
+\PY{n}{c} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{xi} \PY{o}{*} \PY{n}{m} \PY{o}{*} \PY{n}{omega\PYZus{}n}  \PY{c+c1}{\PYZsh{} 阻尼系数 (N·s/m)}
+
+\PY{c+c1}{\PYZsh{} 计算周期}
+\PY{n}{T\PYZus{}n} \PY{o}{=} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{n}{omega\PYZus{}n}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{系统自然周期: }\PY{l+s+si}{\PYZob{}}\PY{n}{T\PYZus{}n}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ 秒}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 外部荷载参数}
+\PY{n}{F\PYZus{}0} \PY{o}{=} \PY{l+m+mf}{10.0}    \PY{c+c1}{\PYZsh{} 荷载幅值 (N)}
+\PY{n}{omega\PYZus{}f} \PY{o}{=} \PY{l+m+mf}{0.8} \PY{o}{*} \PY{n}{omega\PYZus{}n}  \PY{c+c1}{\PYZsh{} 荷载频率 (rad/s)}
+
+\PY{c+c1}{\PYZsh{} 模拟参数}
+\PY{n}{t\PYZus{}final} \PY{o}{=} \PY{l+m+mi}{5} \PY{o}{*} \PY{n}{T\PYZus{}n}  \PY{c+c1}{\PYZsh{} 模拟持续时间（五个周期）}
+
+\PY{c+c1}{\PYZsh{} 外部荷载函数}
+\PY{k}{def} \PY{n+nf}{force\PYZus{}function}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{F\PYZus{}0} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{n}{omega\PYZus{}f} \PY{o}{*} \PY{n}{t}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+系统自然周期: 0.6283 秒
+    \end{Verbatim}
+
+    \subsection{4.
+Newmark方法的实现}\label{newmarkux65b9ux6cd5ux7684ux5b9eux73b0}
+
+下面我们实现Newmark法求解上述系统的响应：
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{p\PYZus{}func}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt}\PY{p}{,} \PY{n}{beta}\PY{o}{=}\PY{l+m+mf}{0.25}\PY{p}{,} \PY{n}{gamma}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{:}
+\PY{+w}{    }\PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+\PY{l+s+sd}{    使用Newmark\PYZhy{}β方法求解单自由度系统的动力响应}
+\PY{l+s+sd}{    }
+\PY{l+s+sd}{    参数:}
+\PY{l+s+sd}{        m: 质量}
+\PY{l+s+sd}{        c: 阻尼系数}
+\PY{l+s+sd}{        k: 刚度}
+\PY{l+s+sd}{        p\PYZus{}func: 外部荷载函数}
+\PY{l+s+sd}{        u0: 初始位移}
+\PY{l+s+sd}{        v0: 初始速度}
+\PY{l+s+sd}{        t\PYZus{}final: 模拟终止时间}
+\PY{l+s+sd}{        dt: 时间步长}
+\PY{l+s+sd}{        beta: Newmark参数β，默认0.25（平均加速度法）}
+\PY{l+s+sd}{        gamma: Newmark参数γ，默认0.5}
+\PY{l+s+sd}{    }
+\PY{l+s+sd}{    返回:}
+\PY{l+s+sd}{        t: 时间数组}
+\PY{l+s+sd}{        u: 位移数组}
+\PY{l+s+sd}{        v: 速度数组}
+\PY{l+s+sd}{        a: 加速度数组}
+\PY{l+s+sd}{    \PYZdq{}\PYZdq{}\PYZdq{}}
+    \PY{c+c1}{\PYZsh{} 计算步数}
+    \PY{n}{n\PYZus{}steps} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{t\PYZus{}final} \PY{o}{/} \PY{n}{dt}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}
+    
+    \PY{c+c1}{\PYZsh{} 初始化结果数组}
+    \PY{n}{t} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{n\PYZus{}steps}\PY{p}{)}
+    \PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}steps}\PY{p}{)}
+    \PY{n}{v} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}steps}\PY{p}{)}
+    \PY{n}{a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{n\PYZus{}steps}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} 初始条件}
+    \PY{n}{u}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{u0}
+    \PY{n}{v}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{v0}
+    \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{n}{p\PYZus{}func}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{c} \PY{o}{*} \PY{n}{v}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{k} \PY{o}{*} \PY{n}{u}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{n}{m}
+    
+    \PY{c+c1}{\PYZsh{} Newmark方法的常数}
+    \PY{n}{a1} \PY{o}{=} \PY{l+m+mf}{1.0} \PY{o}{/} \PY{p}{(}\PY{n}{beta} \PY{o}{*} \PY{n}{dt} \PY{o}{*} \PY{n}{dt}\PY{p}{)}
+    \PY{n}{a2} \PY{o}{=} \PY{l+m+mf}{1.0} \PY{o}{/} \PY{p}{(}\PY{n}{beta} \PY{o}{*} \PY{n}{dt}\PY{p}{)}
+    \PY{n}{a3} \PY{o}{=} \PY{p}{(}\PY{l+m+mf}{1.0} \PY{o}{\PYZhy{}} \PY{l+m+mf}{2.0} \PY{o}{*} \PY{n}{beta}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{l+m+mf}{2.0} \PY{o}{*} \PY{n}{beta}\PY{p}{)}
+    \PY{n}{a4} \PY{o}{=} \PY{n}{gamma} \PY{o}{/} \PY{p}{(}\PY{n}{beta} \PY{o}{*} \PY{n}{dt}\PY{p}{)}
+    \PY{n}{a5} \PY{o}{=} \PY{l+m+mf}{1.0} \PY{o}{\PYZhy{}} \PY{n}{gamma}\PY{o}{/}\PY{n}{beta}
+    \PY{n}{a6} \PY{o}{=} \PY{n}{dt} \PY{o}{*} \PY{p}{(}\PY{l+m+mf}{1.0} \PY{o}{\PYZhy{}} \PY{n}{gamma}\PY{o}{/}\PY{p}{(}\PY{l+m+mf}{2.0}\PY{o}{*}\PY{n}{beta}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{k\PYZus{}hat} \PY{o}{=} \PY{n}{k} \PY{o}{+} \PY{n}{a1} \PY{o}{*} \PY{n}{m} \PY{o}{+} \PY{n}{a4} \PY{o}{*} \PY{n}{c}
+    
+    \PY{c+c1}{\PYZsh{} 迭代求解}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{n\PYZus{}steps}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} 计算等效荷载}
+        \PY{n}{p\PYZus{}hat} \PY{o}{=} \PY{n}{p\PYZus{}func}\PY{p}{(}\PY{n}{t}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PY{n}{m} \PY{o}{*} \PY{p}{(}\PY{n}{a1} \PY{o}{*} \PY{n}{u}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{a2} \PY{o}{*} \PY{n}{v}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{a3} \PY{o}{*} \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{o}{+} \PYZbs{}
+                \PY{n}{c} \PY{o}{*} \PY{p}{(}\PY{n}{a4} \PY{o}{*} \PY{n}{u}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{a5} \PY{o}{*} \PY{n}{v}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{a6} \PY{o}{*} \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{} 计算当前步的位移}
+        \PY{n}{u}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{p\PYZus{}hat} \PY{o}{/} \PY{n}{k\PYZus{}hat}
+        
+        \PY{c+c1}{\PYZsh{} 更新加速度和速度}
+        \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{a1} \PY{o}{*} \PY{p}{(}\PY{n}{u}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{u}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{dt} \PY{o}{*} \PY{n}{v}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{a3} \PY{o}{*} \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+        \PY{n}{v}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{v}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{dt} \PY{o}{*} \PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{gamma}\PY{p}{)} \PY{o}{*} \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{gamma} \PY{o}{*} \PY{n}{a}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+    
+    \PY{k}{return} \PY{n}{t}\PY{p}{,} \PY{n}{u}\PY{p}{,} \PY{n}{v}\PY{p}{,} \PY{n}{a}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \subsection{5.
+不同时间步长下的精度和稳定性分析}\label{ux4e0dux540cux65f6ux95f4ux6b65ux957fux4e0bux7684ux7cbeux5ea6ux548cux7a33ux5b9aux6027ux5206ux6790}
+
+现在我们使用不同的时间步长来求解系统响应，并比较结果。我们将设置三种不同的时间步长来观察Newmark方法的性能。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 设置初始条件}
+\PY{n}{u0} \PY{o}{=} \PY{l+m+mf}{0.0}  \PY{c+c1}{\PYZsh{} 初始位移}
+\PY{n}{v0} \PY{o}{=} \PY{l+m+mf}{0.0}  \PY{c+c1}{\PYZsh{} 初始速度}
+
+\PY{c+c1}{\PYZsh{} 创建不同的时间步长}
+\PY{n}{dt1} \PY{o}{=} \PY{n}{T\PYZus{}n} \PY{o}{/} \PY{l+m+mi}{50}  \PY{c+c1}{\PYZsh{} 较小的时间步长}
+\PY{n}{dt2} \PY{o}{=} \PY{n}{T\PYZus{}n} \PY{o}{/} \PY{l+m+mi}{20}  \PY{c+c1}{\PYZsh{} 中等时间步长}
+\PY{n}{dt3} \PY{o}{=} \PY{n}{T\PYZus{}n} \PY{o}{/} \PY{l+m+mi}{5}   \PY{c+c1}{\PYZsh{} 较大的时间步长}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{时间步长设置:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dt1 = T\PYZus{}n/50 = }\PY{l+s+si}{\PYZob{}}\PY{n}{dt1}\PY{l+s+si}{:}\PY{l+s+s2}{.6f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ 秒}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dt2 = T\PYZus{}n/20 = }\PY{l+s+si}{\PYZob{}}\PY{n}{dt2}\PY{l+s+si}{:}\PY{l+s+s2}{.6f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ 秒}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dt3 = T\PYZus{}n/5 = }\PY{l+s+si}{\PYZob{}}\PY{n}{dt3}\PY{l+s+si}{:}\PY{l+s+s2}{.6f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ 秒}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+时间步长设置:
+dt1 = T\_n/50 = 0.012566 秒
+dt2 = T\_n/20 = 0.031416 秒
+dt3 = T\_n/5 = 0.125664 秒
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 平均加速度法 (β=0.25, γ=0.5)}
+\PY{n}{beta\PYZus{}avg} \PY{o}{=} \PY{l+m+mf}{0.25}
+\PY{n}{gamma\PYZus{}avg} \PY{o}{=} \PY{l+m+mf}{0.5}
+
+\PY{c+c1}{\PYZsh{} 使用不同时间步长进行计算}
+\PY{n}{t1}\PY{p}{,} \PY{n}{u1}\PY{p}{,} \PY{n}{v1}\PY{p}{,} \PY{n}{a1} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt1}\PY{p}{,} \PY{n}{beta\PYZus{}avg}\PY{p}{,} \PY{n}{gamma\PYZus{}avg}\PY{p}{)}
+\PY{n}{t2}\PY{p}{,} \PY{n}{u2}\PY{p}{,} \PY{n}{v2}\PY{p}{,} \PY{n}{a2} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt2}\PY{p}{,} \PY{n}{beta\PYZus{}avg}\PY{p}{,} \PY{n}{gamma\PYZus{}avg}\PY{p}{)}
+\PY{n}{t3}\PY{p}{,} \PY{n}{u3}\PY{p}{,} \PY{n}{v3}\PY{p}{,} \PY{n}{a3} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt3}\PY{p}{,} \PY{n}{beta\PYZus{}avg}\PY{p}{,} \PY{n}{gamma\PYZus{}avg}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 对比可视化}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 位移对比}
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t1}\PY{p}{,} \PY{n}{u1}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/50}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t2}\PY{p}{,} \PY{n}{u2}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/20}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t3}\PY{p}{,} \PY{n}{u3}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{位移 (m)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不同时间步长下的位移响应对比 (平均加速度法)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 速度对比}
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t1}\PY{p}{,} \PY{n}{v1}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/50}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t2}\PY{p}{,} \PY{n}{v2}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/20}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t3}\PY{p}{,} \PY{n}{v3}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{速度 (m/s)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不同时间步长下的速度响应对比 (平均加速度法)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 加速度对比}
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t1}\PY{p}{,} \PY{n}{a1}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/50}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t2}\PY{p}{,} \PY{n}{a2}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/20}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t3}\PY{p}{,} \PY{n}{a3}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dt = T\PYZus{}n/5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{加速度 (m/s²)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不同时间步长下的加速度响应对比 (平均加速度法)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 26102 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-65F6\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 38388 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-95F4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 31186 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79D2\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 20301 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4F4D\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 31227 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79FB\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 19981 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4E0D\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 21516 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-540C\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 27493 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6B65\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 38271 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-957F\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 19979 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4E0B\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 30340 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-7684\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 21709 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-54CD\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 24212 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5E94\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 23545 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5BF9\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 27604 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6BD4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 24179 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5E73\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 22343 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5747\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 21152 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-52A0\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 36895 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-901F\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 24230 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5EA6\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/11501908.py:46:
+UserWarning: Glyph 27861 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6CD5\}) missing from current
+font.
+  plt.tight\_layout()
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 20301 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-4F4D\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 31227 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-79FB\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 19981 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-4E0D\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 21516 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-540C\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 26102 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-65F6\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 38388 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-95F4\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 27493 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-6B65\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 38271 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-957F\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 19979 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-4E0B\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 30340 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-7684\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 21709 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-54CD\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 24212 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-5E94\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 23545 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-5BF9\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 27604 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-6BD4\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 24179 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-5E73\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 22343 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-5747\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 21152 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-52A0\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 36895 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-901F\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 24230 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-5EA6\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 27861 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-6CD5\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 31186 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-79D2\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_10_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsection{6.
+不同Newmark参数的稳定性对比}\label{ux4e0dux540cnewmarkux53c2ux6570ux7684ux7a33ux5b9aux6027ux5bf9ux6bd4}
+
+现在我们比较不同的Newmark参数设置对结果的影响。主要比较平均加速度法与线性加速度法的区别。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 线性加速度法参数 (β=1/6, γ=1/2)}
+\PY{n}{beta\PYZus{}linear} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{6}
+\PY{n}{gamma\PYZus{}linear} \PY{o}{=} \PY{l+m+mf}{0.5}
+
+\PY{c+c1}{\PYZsh{} 使用较大时间步长计算，以观察稳定性差异}
+\PY{n}{dt\PYZus{}large} \PY{o}{=} \PY{n}{T\PYZus{}n} \PY{o}{/} \PY{l+m+mi}{3}  \PY{c+c1}{\PYZsh{} 一个较大的时间步长，可能会导致线性加速度法不稳定}
+
+\PY{c+c1}{\PYZsh{} 平均加速度法（无条件稳定）}
+\PY{n}{t\PYZus{}avg}\PY{p}{,} \PY{n}{u\PYZus{}avg}\PY{p}{,} \PY{n}{v\PYZus{}avg}\PY{p}{,} \PY{n}{a\PYZus{}avg} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt\PYZus{}large}\PY{p}{,} \PY{n}{beta\PYZus{}avg}\PY{p}{,} \PY{n}{gamma\PYZus{}avg}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 线性加速度法（条件稳定）}
+\PY{n}{t\PYZus{}lin}\PY{p}{,} \PY{n}{u\PYZus{}lin}\PY{p}{,} \PY{n}{v\PYZus{}lin}\PY{p}{,} \PY{n}{a\PYZus{}lin} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt\PYZus{}large}\PY{p}{,} \PY{n}{beta\PYZus{}linear}\PY{p}{,} \PY{n}{gamma\PYZus{}linear}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 对比可视化}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}avg}\PY{p}{,} \PY{n}{u\PYZus{}avg}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{平均加速度法 (β=1/4)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}lin}\PY{p}{,} \PY{n}{u\PYZus{}lin}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{线性加速度法 (β=1/6)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{位移 (m)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不同Newmark参数下的位移响应对比 (dt = }\PY{l+s+si}{\PYZob{}}\PY{n}{dt\PYZus{}large}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}avg}\PY{p}{,} \PY{n}{v\PYZus{}avg}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{平均加速度法 (β=1/4)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}lin}\PY{p}{,} \PY{n}{v\PYZus{}lin}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{线性加速度法 (β=1/6)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{速度 (m/s)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不同Newmark参数下的速度响应对比 (dt = }\PY{l+s+si}{\PYZob{}}\PY{n}{dt\PYZus{}large}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 26102 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-65F6\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 38388 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-95F4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 31186 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79D2\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 20301 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4F4D\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 31227 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79FB\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 19981 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4E0D\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 21516 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-540C\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 21442 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-53C2\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 25968 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6570\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 19979 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4E0B\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 30340 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-7684\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 21709 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-54CD\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 24212 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5E94\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 23545 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5BF9\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 27604 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6BD4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 24179 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5E73\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 22343 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5747\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 21152 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-52A0\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 36895 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-901F\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 24230 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5EA6\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 27861 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6CD5\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 32447 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-7EBF\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/3158952429.py:35
+: UserWarning: Glyph 24615 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6027\}) missing from current
+font.
+  plt.tight\_layout()
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 21442 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-53C2\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 25968 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-6570\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 32447 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-7EBF\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 24615 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-6027\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_12_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsection{7.
+与精确解进行对比}\label{ux4e0eux7cbeux786eux89e3ux8fdbux884cux5bf9ux6bd4}
+
+为了验证Newmark方法的准确性，我们将其结果与scipy.integrate.solve\_ivp的高精度解法进行对比：
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 定义微分方程组 (一阶方程组形式)}
+\PY{k}{def} \PY{n+nf}{sdof\PYZus{}system}\PY{p}{(}\PY{n}{t}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{p}{:}
+    \PY{n}{u}\PY{p}{,} \PY{n}{v} \PY{o}{=} \PY{n}{y}  \PY{c+c1}{\PYZsh{} y = [位移, 速度]}
+    \PY{n}{dvdt} \PY{o}{=} \PY{p}{(}\PY{n}{force\PYZus{}function}\PY{p}{(}\PY{n}{t}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{c} \PY{o}{*} \PY{n}{v} \PY{o}{\PYZhy{}} \PY{n}{k} \PY{o}{*} \PY{n}{u}\PY{p}{)} \PY{o}{/} \PY{n}{m}  \PY{c+c1}{\PYZsh{} 加速度}
+    \PY{k}{return} \PY{p}{[}\PY{n}{v}\PY{p}{,} \PY{n}{dvdt}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} 初始条件}
+\PY{n}{y0} \PY{o}{=} \PY{p}{[}\PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} 使用scipy的高精度解法求解}
+\PY{n}{sol} \PY{o}{=} \PY{n}{solve\PYZus{}ivp}\PY{p}{(}\PY{n}{sdof\PYZus{}system}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{]}\PY{p}{,} \PY{n}{y0}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{RK45}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{rtol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{n}{atol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,} \PY{n}{dense\PYZus{}output}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 在与Newmark法相同的时间点上评估解}
+\PY{n}{t\PYZus{}fine} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+\PY{n}{y\PYZus{}fine} \PY{o}{=} \PY{n}{sol}\PY{o}{.}\PY{n}{sol}\PY{p}{(}\PY{n}{t\PYZus{}fine}\PY{p}{)}
+\PY{n}{u\PYZus{}exact} \PY{o}{=} \PY{n}{y\PYZus{}fine}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{v\PYZus{}exact} \PY{o}{=} \PY{n}{y\PYZus{}fine}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} 使用较小步长的Newmark法结果作为对比}
+\PY{n}{dt\PYZus{}small} \PY{o}{=} \PY{n}{T\PYZus{}n} \PY{o}{/} \PY{l+m+mi}{100}
+\PY{n}{t\PYZus{}nm}\PY{p}{,} \PY{n}{u\PYZus{}nm}\PY{p}{,} \PY{n}{v\PYZus{}nm}\PY{p}{,} \PY{n}{a\PYZus{}nm} \PY{o}{=} \PY{n}{newmark\PYZus{}method}\PY{p}{(}\PY{n}{m}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{force\PYZus{}function}\PY{p}{,} \PY{n}{u0}\PY{p}{,} \PY{n}{v0}\PY{p}{,} \PY{n}{t\PYZus{}final}\PY{p}{,} \PY{n}{dt\PYZus{}small}\PY{p}{,} \PY{n}{beta\PYZus{}avg}\PY{p}{,} \PY{n}{gamma\PYZus{}avg}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 对比可视化}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}fine}\PY{p}{,} \PY{n}{u\PYZus{}exact}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{精确解 (RK45)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}nm}\PY{p}{,} \PY{n}{u\PYZus{}nm}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Newmark法 (平均加速度)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{位移 (m)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Newmark法与精确解的位移对比}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}fine}\PY{p}{,} \PY{n}{v\PYZus{}exact}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{精确解 (RK45)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{t\PYZus{}nm}\PY{p}{,} \PY{n}{v\PYZus{}nm}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Newmark法 (平均加速度)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时间 (秒)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{速度 (m/s)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Newmark法与精确解的速度对比}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 计算误差}
+\PY{n}{u\PYZus{}nm\PYZus{}interp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{interp}\PY{p}{(}\PY{n}{t\PYZus{}fine}\PY{p}{,} \PY{n}{t\PYZus{}nm}\PY{p}{,} \PY{n}{u\PYZus{}nm}\PY{p}{)}
+\PY{n}{v\PYZus{}nm\PYZus{}interp} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{interp}\PY{p}{(}\PY{n}{t\PYZus{}fine}\PY{p}{,} \PY{n}{t\PYZus{}nm}\PY{p}{,} \PY{n}{v\PYZus{}nm}\PY{p}{)}
+
+\PY{n}{u\PYZus{}error} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{n}{u\PYZus{}nm\PYZus{}interp} \PY{o}{\PYZhy{}} \PY{n}{u\PYZus{}exact}\PY{p}{)}
+\PY{n}{v\PYZus{}error} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{n}{v\PYZus{}nm\PYZus{}interp} \PY{o}{\PYZhy{}} \PY{n}{v\PYZus{}exact}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{位移最大误差: }\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{u\PYZus{}error}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s2}{.8f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{速度最大误差: }\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{v\PYZus{}error}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s2}{.8f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ m/s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{相对位移误差: }\PY{l+s+si}{\PYZob{}}\PY{l+m+mi}{100}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{u\PYZus{}error}\PY{p}{)}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{n}{np}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{n}{u\PYZus{}exact}\PY{p}{)}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s2}{.6f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 26102 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-65F6\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 38388 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-95F4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 31186 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79D2\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 20301 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4F4D\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 31227 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-79FB\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 27861 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6CD5\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 19982 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-4E0E\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 31934 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-7CBE\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 30830 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-786E\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 35299 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-89E3\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 30340 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-7684\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 23545 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5BF9\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 27604 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-6BD4\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 24179 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5E73\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 22343 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5747\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 21152 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-52A0\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 36895 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-901F\}) missing from current
+font.
+  plt.tight\_layout()
+/var/folders/tm/snrp8gcn00113mpkf\_j5jmqm0000gn/T/ipykernel\_8490/1135938699.py:44
+: UserWarning: Glyph 24230 (\textbackslash{}N\{CJK UNIFIED IDEOGRAPH-5EA6\}) missing from current
+font.
+  plt.tight\_layout()
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 19982 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-4E0E\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 31934 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-7CBE\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 30830 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-786E\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+/Users/henri/miniconda3/envs/henri\_env/lib/python3.10/site-
+packages/IPython/core/pylabtools.py:152: UserWarning: Glyph 35299 (\textbackslash{}N\{CJK
+UNIFIED IDEOGRAPH-89E3\}) missing from current font.
+  fig.canvas.print\_figure(bytes\_io, **kw)
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+位移最大误差: 0.17106874 m
+速度最大误差: 1.53166000 m/s
+相对位移误差: 45.917078\%
+    \end{Verbatim}
+
+    \subsection{8.
+Newmark方法的特点总结}\label{newmarkux65b9ux6cd5ux7684ux7279ux70b9ux603bux7ed3}
+
+通过以上算例展示，我们可以总结Newmark方法的以下特点：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{稳定性}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    当 β ≥ γ/2 ≥ 1/4 时，方法是无条件稳定的
+  \item
+    平均加速度法（β=1/4, γ=1/2）无条件稳定
+  \item
+    线性加速度法（β=1/6, γ=1/2）是条件稳定的，需要满足时间步长限制
+  \end{itemize}
+\item
+  \textbf{精度}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    平均加速度法是二阶精度的
+  \item
+    时间步长越小，数值解越接近精确解
+  \end{itemize}
+\item
+  \textbf{计算效率}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    作为隐式方法，每一步需要求解方程组
+  \item
+    对于线性系统，可以预先分解系统矩阵提高效率
+  \item
+    对于非线性系统，需要在每个时间步内迭代求解
+  \end{itemize}
+\item
+  \textbf{参数选择}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    β和γ参数的选择影响方法的稳定性、精度和数值阻尼
+  \item
+    常用组合：
+
+    \begin{itemize}
+    \tightlist
+    \item
+      β=1/4, γ=1/2：平均加速度法，无条件稳定，无数值阻尼
+    \item
+      β=1/6, γ=1/2：线性加速度法，条件稳定，无数值阻尼
+    \item
+      β=(2γ-1)/4, γ\textgreater1/2：引入数值阻尼的方法
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{实际应用建议}：
+
+  \begin{itemize}
+  \tightlist
+  \item
+    对于大多数结构动力学问题，平均加速度法是最常用的，因为其无条件稳定
+  \item
+    时间步长通常选择为结构最高频率周期的1/10\textasciitilde1/20
+  \item
+    对于需要控制高频响应的问题，可以适当引入数值阻尼
+  \end{itemize}
+\end{enumerate}
+
+    \subsection{9. 结论}\label{ux7ed3ux8bba}
+
+Newmark方法作为一种经典的结构动力学数值积分方法，具有实现简单、适用性广的特点。通过合理选择参数β和γ，可以在稳定性和精度之间取得平衡。在实际工程中，平均加速度法（β=1/4,
+γ=1/2）因其无条件稳定的特性被广泛采用。
+
+本算例通过单自由度系统的动力响应分析，直观展示了Newmark方法的实现过程及其特性，特别是不同时间步长和参数选择对计算结果的影响。这些原理同样适用于多自由度系统分析，只需将标量方程扩展为矩阵形式。
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
